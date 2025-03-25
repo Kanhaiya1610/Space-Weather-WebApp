@@ -1,0 +1,17 @@
+com\spaceweather\controller\AuthRequest.class
+com\spaceweather\model\RadiationStorm.class
+com\spaceweather\model\Alert.class
+com\spaceweather\service\SpaceWeatherService.class
+com\spaceweather\config\JwtConfig.class
+com\spaceweather\controller\WebController.class
+com\spaceweather\model\SolarFlare.class
+com\spaceweather\controller\SpaceWeatherController.class
+com\spaceweather\SpaceWeatherApplication.class
+com\spaceweather\service\SpaceWeatherService$1.class
+com\spaceweather\config\JwtAuthenticationFilter.class
+com\spaceweather\controller\AuthResponse.class
+com\spaceweather\repository\SolarFlareRepository.class
+com\spaceweather\controller\AuthController.class
+com\spaceweather\repository\AlertRepository.class
+com\spaceweather\repository\RadiationStormRepository.class
+com\spaceweather\config\SecurityConfig.class

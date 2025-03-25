@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Space Weather Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Space Weather Monitor</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alerts">Alerts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Risk Level and Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Current Risk Level</h5>
+                        <h2 class="display-4" th:text="${riskLevel}"
+                            th:class="${riskLevel == 'HIGH' ? 'text-danger' : 
+                                      riskLevel == 'MEDIUM' ? 'text-warning' : 'text-success'}">
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Active Alerts</h5>
+                        <h2 class="display-4" th:text="${#lists.size(alerts)}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Recent Solar Flares</h5>
+                        <h2 class="display-4" th:text="${#lists.size(solarFlares)}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Radiation Storms</h5>
+                        <h2 class="display-4" th:text="${#lists.size(radiationStorms)}">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Solar Flare Intensity Timeline</h5>
+                        <canvas id="solarFlareChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Radiation Storm Levels</h5>
+                        <canvas id="radiationStormChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Tables -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Solar Activity</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Intensity</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="flare : ${solarFlares}">
+                                        <td th:text="${#temporals.format(flare.beginTime, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td>Solar Flare</td>
+                                        <td th:text="${flare.classType}"></td>
+                                        <td th:text="${flare.sourceLocation}"></td>
+                                        <td>
+                                            <span class="badge bg-success">Recorded</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Solar Flare Chart
+        const flares = /*[[${solarFlares}]]*/ [];
+        const ctx = document.getElementById('solarFlareChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: flares.map(f => f.beginTime),
+                datasets: [{
+                    label: 'Solar Flare Intensity',
+                    data: flares.map(f => f.classType),
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Radiation Storm Chart
+        const storms = /*[[${radiationStorms}]]*/ [];
+        const stormCtx = document.getElementById('radiationStormChart').getContext('2d');
+        new Chart(stormCtx, {
+            type: 'bar',
+            data: {
+                labels: storms.map(s => s.startTime),
+                datasets: [{
+                    label: 'Proton Flux',
+                    data: storms.map(s => s.protonFlux),
+                    backgroundColor: 'rgb(54, 162, 235)',
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

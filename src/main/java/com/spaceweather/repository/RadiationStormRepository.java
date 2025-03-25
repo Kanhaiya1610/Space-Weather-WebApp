@@ -1,0 +1,11 @@
+package com.spaceweather.repository;
+
+import com.spaceweather.model.RadiationStorm;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+
+public interface RadiationStormRepository extends JpaRepository<RadiationStorm, Long> {
+    List<RadiationStorm> findByStartTimeAfter(LocalDateTime time);
+    List<RadiationStorm> findByActiveTrue();
+} 
